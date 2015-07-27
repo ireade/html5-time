@@ -1,0 +1,34 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "ire@ireaderinokun.com",
+    "longName": "html-5-time-c",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "fonts/pn-light.ttf",
+                "name": "PN_LIGHT_36",
+                "type": "font"
+            },
+            {
+                "file": "images/Pebble-bw.png",
+                "name": "BACKGROUND",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "html-5-time-c",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "4242c116-bfa5-4cf9-bf2d-13e2659fbc46",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
