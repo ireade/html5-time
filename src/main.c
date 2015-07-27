@@ -2,7 +2,9 @@
   
 static Window *s_main_window;
 static TextLayer *s_time_layer;
+static TextLayer *s_date_layer;
 static GFont s_time_font;
+static GFont s_date_font;
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
 
@@ -18,14 +20,23 @@ static void main_window_load(Window *window) {
 
   // Fonts
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_PN_LIGHT_36));
+  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_PN_LIGHT_18));
   
   // Create time TextLayer
-  s_time_layer = text_layer_create(GRect(0, 55, 144, 50));
+  s_time_layer = text_layer_create(GRect(0, 45, 144, 50));
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorWhite);
   text_layer_set_font(s_time_layer, s_time_font);
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
+  
+  // Create date TextLayer
+  s_date_layer = text_layer_create(GRect(0, 95, 144, 168));
+  text_layer_set_background_color(s_date_layer, GColorClear);
+  text_layer_set_text_color(s_date_layer, GColorWhite);
+  text_layer_set_font(s_date_layer, s_date_font);
+  text_layer_set_text_alignment(s_date_layer, GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
 
 }
 
@@ -50,13 +61,32 @@ static void update_time() {
   text_layer_set_text(s_time_layer, buffer);
 }
 
+static void update_date() {
+  // Get a tm structure
+  time_t temp = time(NULL); 
+  struct tm *tick_time = localtime(&temp);
+
+  // Create a long-lived buffer
+  static char buffer[] = "0000000000000000";
+  
+  strftime(buffer, sizeof("0000000000000000"), "%a %b %d", tick_time);
+  
+  //for(char* pc=buffer;*pc!=0;++pc) *pc = lower_to_upper(*pc);
+
+  // Display this time on the TextLayer
+  text_layer_set_text(s_date_layer, buffer);
+  
+}
+
 
 static void main_window_unload(Window *window) {
   
   // Destroy TextLayer
   text_layer_destroy(s_time_layer);
-
   fonts_unload_custom_font(s_time_font);
+  
+  text_layer_destroy(s_date_layer);
+  fonts_unload_custom_font(s_date_font);
 
   // Destroy GBitmap
   gbitmap_destroy(s_background_bitmap);
@@ -69,6 +99,7 @@ static void main_window_unload(Window *window) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
+  update_date();
 }
 
 
@@ -87,6 +118,7 @@ static void init() {
   
   // Make sure the time is displayed from the start
   update_time();
+  update_date();
  
   // Register with TickTimerService
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
