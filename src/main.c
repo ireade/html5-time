@@ -67,11 +67,14 @@ static void update_date() {
   struct tm *tick_time = localtime(&temp);
 
   // Create a long-lived buffer
-  static char buffer[] = "0000000000000000";
+  static char buffer[] = "0000000000";
   
-  strftime(buffer, sizeof("0000000000000000"), "%a %b %d", tick_time);
+  strftime(buffer, sizeof("0000000000"), "%a %d %b", tick_time);
   
-  //for(char* pc=buffer;*pc!=0;++pc) *pc = lower_to_upper(*pc);
+  char lower_to_upper(char c) {
+    return (c>='a' && c<='z')?c&0xdf:c;
+  }
+  for(char* pc=buffer;*pc!=0;++pc) *pc = lower_to_upper(*pc);
 
   // Display this time on the TextLayer
   text_layer_set_text(s_date_layer, buffer);
